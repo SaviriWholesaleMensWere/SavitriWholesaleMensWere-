@@ -92,14 +92,14 @@ footer {
   color: #f1f5f9;
 }
 
-/* Header */
 header {
   background: #0f172a;
   color: #fff;
-  padding: px 0px;
+  padding: 10px 0; /* fixed */
   display: flex;
-  align-items: center;
+  align-items: center; /* fixed */
 }
+
 header nav a {
   color: #fff;
   margin: 10px ;
@@ -281,16 +281,15 @@ nav a:hover { color: var(--accent); }
 }
 body { font-family: Arial, sans-serif; background:#f8f9fa; margin:0; }
 
-
-
-    /* Navbar */
-
-    .navbar { display:flex; justify-content:space-between; align-items:center;
-
-              background:#111;color:#fff; }
-
-    .navbar .logo img { height:80px; }
-
+   .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* fixed */
+  background: #111;
+  color: #fff;
+  padding: 8px 20px;
+}
+.navbar .logo img { height: 60px; }
 
 
   </style>
@@ -728,11 +727,26 @@ body { font-family: Arial, sans-serif; background:#f8f9fa; margin:0; }
   </a>
 
 <script>
-// Toggle mobile menu
-function toggleMenu() {
-  const menu = document.getElementById("mobileMenu");
-  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-}
+  // Mobile menu toggle
+  function toggleMenu() {
+    const menu = document.getElementById("mobileMenu");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+
+  // Add to cart functionality
+  let cartCount = 0;
+  const buttons = document.querySelectorAll(".order-btn");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      cartCount++;
+      document.getElementById("cart-count").innerText = cartCount;
+      document.getElementById("cart-count-mobile").innerText = cartCount;
+    });
+  });
+
+  // Footer year auto-update
+  document.getElementById("year").innerText = new Date().getFullYear();
 
 // Close mobile menu when any link is clicked
 document.querySelectorAll("#mobileMenu a").forEach(link => {
