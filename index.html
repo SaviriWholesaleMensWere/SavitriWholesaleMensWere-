@@ -347,7 +347,7 @@ nav a:hover { color: var(--accent); }
       <article class="card">
         <a href="product-details2.html">
           <div class="card-figure">
-            <img src="Images/img44.webp" alt="Plain Shirt">
+            <img src="img44.webp" alt="Plain Shirt">
           </div>
         </a>
         <div class="card-body">
@@ -687,11 +687,18 @@ nav a:hover { color: var(--accent); }
   </a>
 
 <script>
-
+// Toggle mobile menu
 function toggleMenu() {
   const menu = document.getElementById("mobileMenu");
   menu.style.display = menu.style.display === "flex" ? "none" : "flex";
 }
+
+// Close mobile menu when any link is clicked
+document.querySelectorAll("#mobileMenu a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.getElementById("mobileMenu").style.display = "none";
+  });
+});
 function updateCartCount(){
   const cart = readCart();
   const totalQty = cart.reduce((s,it)=>s + (it.qty||0), 0);
