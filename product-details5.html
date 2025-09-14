@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Fred Vendor Perry Shirt — Savitri Wholesale</title>
+<style>
+:root{
+  --bg:#f6f9fb; --card:#fff; --brand:#0ea5e9; --accent:#e91e63;
+  --muted:#6b7280; --radius:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0f172a}
+.container{max-width:1100px;margin:28px auto;padding:18px}
+a{color:var(--brand);text-decoration:none;position:relative}
+a:hover{text-decoration:underline;text-decoration-thickness:2px}
+.cart-count{
+  position:absolute; top:-8px; right:-12px; background:#e91e63; color:#fff; font-size:12px; font-weight:700; padding:2px 6px; border-radius:50%;
+}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+.card{background:var(--card);padding:20px;border-radius:var(--radius);box-shadow:0 8px 24px rgba(2,6,23,0.06)}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:800px){.product-grid{grid-template-columns:1fr}}
+.image-wrap{border-radius:10px;overflow:hidden}
+.main-img{width:100%;height:480px;object-fit:cover;cursor:zoom-in;transition:transform .25s}
+.main-img:hover{transform:scale(1.05)}
+.thumbs{display:flex;gap:10px;margin-top:12px}
+.thumb{width:70px;height:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent}
+.thumb.active{border-color:var(--brand)}
+h1{font-size:22px;margin:0 0 8px}
+.muted{color:var(--muted);font-size:14px}
+.price-row{display:flex;gap:12px;align-items:center;margin:12px 0}
+.price-old{text-decoration:line-through;color:#888}
+.price-new{color:var(--accent);font-weight:800;font-size:20px}
+.tags{display:flex;gap:8px;margin-top:8px}
+.tag{padding:6px 10px;border-radius:8px;background:#f1f5f9;font-weight:600;font-size:13px}
+.btn{padding:10px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-ghost{background:#fff;border:1px solid #ddd;color:#0f172a}
+.btn-wish{background:linear-gradient(90deg,var(--accent),#d81b60);color:#fff}
+table{width:100%;border-collapse:collapse;margin-top:20px;box-shadow:0 4px 20px rgba(0,0,0,0.05);border-radius:12px;overflow:hidden}
+th, td{padding:12px;text-align:left;border-bottom:1px solid #eee}
+th{background:var(--brand);color:#fff}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">SW</div>
+      <div>
+        <div style="font-weight:800">Savitri Wholesale</div>
+        <div style="font-size:13px;color:var(--muted)">Bulk Shirts • Best Deals</div>
+      </div>
+    </div>
+    <div>
+      <a href="cart.html"> <img src="Images/cart.png" alt="Cart" style="width:40px;height:40px;vertical-align:middle;margin-right:8px;"> 
+      <span id="cartCount" class="cart-count">0</span></a>
+    </div>
+  </div>
+
+  <div class="card product-grid">
+    <div>
+      <div class="image-wrap">
+        <img id="mainImage" class="main-img" src="Images/img8.webp" alt="Fred Vendor Perry Shirt">
+      </div>
+      <div class="thumbs">
+        <img src="Images/img8.webp" class="thumb active" onclick="pick(this)">
+        <img src="Images/img9.webp" class="thumb" onclick="pick(this)">
+        <img src="Images/img10.webp" class="thumb" onclick="pick(this)">
+      </div>
+    </div>
+
+    <div>
+      <h1>Fred Vendor Perry Shirt</h1>
+      <div class="muted">Stylish branded-inspired shirt. Multiple colorways available.</div>
+
+      <div class="price-row">
+        <div class="price-old">₹799</div>
+        <div class="price-new">₹499</div>
+      </div>
+
+      <div style="margin-top:18px">
+        <button class="btn btn-primary" onclick="buyNow('Fred Vendor Perry Shirt',499)">Buy Now</button>
+        <button class="btn btn-ghost" onclick="addToCart('Fred Vendor Perry Shirt',499)">Add to Cart</button>
+        <button class="btn btn-wish" onclick="toggleWish(this)">♡ Wishlist</button>
+      </div>
+
+      <div style="margin-top:18px">
+        <h3>Available Sizes</h3>
+        <div style="display:flex;gap:8px;">
+          <div class="tag">M</div>
+          <div class="tag">L</div>
+          <div class="tag">XL</div>
+        </div>
+      </div>
+
+      <table>
+        <tr><th>Product Details</th><th></th></tr>
+        <tr><td>Style Code</td><td>SHHDHJSHS528474</td></tr>
+        <tr><td>Sleeves</td><td>Full Sleeves</td></tr>
+        <tr><td>Pattern</td><td>Solid/Striped</td></tr>
+        <tr><td>Occasion</td><td>Casual/Formal</td></tr>
+        <tr><td>Cuffs</td><td>Regular Cuffs</td></tr>
+        <tr><td>Product Type</td><td>Shirt</td></tr>
+        <tr><td>Model Size</td><td>Height 6'1", Chest 40", Waist 32" - Wearing Size 40</td></tr>
+        <tr><td>Collar</td><td>Spread Collar</td></tr>
+      </table>
+
+      <div class="tags" style="margin-top:18px;">
+        <div class="tag">Free Delivery</div>
+        <div class="tag">7 Day Return</div>
+        <div class="tag">Made in India</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CART_KEY = 'cart_sw';
+
+function updateCartCount(){
+  const cart = readCart();
+  const count = cart.reduce((acc,item)=>acc+item.qty,0);
+  document.getElementById('cartCount').textContent = count;
+}
+
+function pick(el){
+  document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mainImage').src = el.src;
+}
+
+function toggleWish(btn){
+  if(btn.dataset.on==='1'){
+    btn.dataset.on='0';
+    btn.textContent='♡ Wishlist';
+    alert('Removed from wishlist');
+  }else{
+    btn.dataset.on='1';
+    btn.textContent='✓ Wishlisted';
+    alert('Added to wishlist');
+  }
+}
+
+function readCart(){
+  try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return [];}
+}
+
+function writeCart(c){localStorage.setItem(CART_KEY,JSON.stringify(c));}
+
+const imageMap={'Fred Vendor Perry Shirt':'Images/img8.webp'};
+
+function addToCart(product,price){
+  const cart = readCart();
+  const existing = cart.find(i=>i.product===product);
+  if(existing){existing.qty++; existing.total = existing.qty*existing.price;}
+  else{cart.push({product,price,qty:1,total:price,image:imageMap[product]});}
+  writeCart(cart);
+  updateCartCount();
+  alert(product+' added to cart');
+}
+
+function buyNow(product,price){
+  addToCart(product,price);
+  window.location.href='cart.html';
+}
+
+// Zoom effect
+const mainImage=document.getElementById("mainImage");
+mainImage.addEventListener("mousemove",function(e){
+  const {left,top,width,height}=mainImage.getBoundingClientRect();
+  const x=((e.pageX-left)/width)*100;
+  const y=((e.pageY-top)/height)*100;
+  mainImage.style.transformOrigin=`${x}% ${y}%`;
+  mainImage.style.transform="scale(2)";
+});
+mainImage.addEventListener("mouseleave",function(){mainImage.style.transform="scale(1)";});
+
+updateCartCount();
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cart — Savitri Wholesale</title>
+<style>
+  :root{--bg:#f6f9fb;--card:#fff;--brand:#0ea5e9;--accent:#e91e63;--muted:#6b7280;--radius:12px}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0f172a}
+  .container{max-width:1000px;margin:28px auto;padding:18px}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  a{text-decoration:none;color:var(--brand)}
+  .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:0 10px 30px rgba(2,6,23,0.06)}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:12px;text-align:left;border-bottom:1px solid #eee}
+  th{background:var(--brand);color:#fff}
+  .qty-control{display:inline-flex;align-items:center;border-radius:8px;overflow:hidden;border:1px solid #eee}
+  .qty-control button{width:34px;height:34px;border:none;background:#fafafa;cursor:pointer;font-weight:700}
+  .summary{max-width:320px;margin-left:18px}
+  .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+  .btn{padding:10px 14px;border-radius:8px;border:none;font-weight:700;cursor:pointer}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-ghost{background:transparent;border:1px solid rgba(15,23,42,0.06)}
+  .muted{color:var(--muted)}
+  @media(max-width:900px){ .layout{flex-direction:column} .summary{margin-left:0;margin-top:12px} }
+  .link-remove{color:var(--accent);cursor:pointer;text-decoration:none}
+  .link-remove:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="top">
+      <div><a href="index.html">← Continue Shopping</a></div>
+      <div style="font-weight:800">Your Cart</div>
+    </div>
+
+    <div style="display:flex;gap:18px" class="layout">
+      <div style="flex:1">
+        <div class="card">
+          <table id="cartTable">
+            <thead>
+              <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="muted">Tip: You can change quantity or remove items before checkout.</div>
+        </div>
+      </div>
+
+      <div class="summary card">
+        <div style="font-weight:800">Order Summary</div>
+        <div class="row"><div class="muted">Subtotal</div><div id="sub">₹0</div></div>
+        <div class="row"><div class="muted">Shipping</div><div id="ship">Free</div></div>
+        <hr style="margin-top:12px;border:none;border-top:1px dashed #eee"/>
+        <div class="row" style="font-weight:800"><div>Total</div><div id="total">₹0</div></div>
+        <div style="margin-top:12px">
+          <button class="btn btn-primary" onclick="proceedToOrder()">Proceed to Checkout</button>
+          <button class="btn btn-ghost" style="margin-left:8px" onclick="clearCart()">Clear Cart</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+const CART_KEY = 'cart_sw';
+function readCart(){ try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return [];} }
+function writeCart(c){
+  localStorage.setItem(CART_KEY, JSON.stringify(c));
+  render();
+  updateCartCount(); // keep header count in sync across pages (index reads same key)
+}
+
+function updateCartCount(){
+  // update a global count key (header on index.html reads from this)
+  const cart = readCart();
+  const total = cart.reduce((s,it)=>s + (it.qty||0), 0);
+  // store a simple number too for backward compatibility
+  localStorage.setItem('cartCount', total);
+  // if this page had a header cart-count element, update it
+  const el = document.getElementById('cart-count');
+  if(el) el.textContent = total;
+}
+
+function render(){
+  const tbody = document.querySelector('#cartTable tbody');
+  tbody.innerHTML = '';
+  const cart = readCart();
+  let subtotal = 0;
+  cart.forEach((it, idx)=>{
+    subtotal += it.total;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="display:flex;gap:10px;align-items:center">
+        <img src="${it.image||'Images/img1.webp'}" style="width:72px;height:72px;object-fit:cover;border-radius:6px">
+        <div>
+          <div style="font-weight:700">${it.product}</div>
+          <div class="muted" style="font-size:13px">SKU: SW-${idx+1}</div>
+        </div>
+      </td>
+      <td>
+        <div class="qty-control">
+          <button onclick="changeQty(${idx}, -1)">−</button>
+          <div style="padding:8px 12px;min-width:40px;text-align:center">${it.qty}</div>
+          <button onclick="changeQty(${idx}, 1)">+</button>
+        </div>
+      </td>
+      <td>₹${it.price}</td>
+      <td>₹${it.total}</td>
+      <td><a class="link-remove" onclick="removeItem(${idx})">Remove</a></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('sub').textContent = '₹' + subtotal;
+  document.getElementById('total').textContent = '₹' + subtotal;
+  updateCartCount();
+}
+
+function changeQty(i, delta){
+  const cart = readCart();
+  if(!cart[i]) return;
+  cart[i].qty = Math.max(1, cart[i].qty + delta);
+  cart[i].total = cart[i].qty * cart[i].price;
+  writeCart(cart);
+}
+function removeItem(i){
+  const cart = readCart();
+  cart.splice(i,1);
+  writeCart(cart);
+}
+function clearCart(){
+  if(!confirm('Clear entire cart?')) return;
+  localStorage.removeItem(CART_KEY);
+  render();
+  updateCartCount();
+}
+function proceedToOrder(){
+  const cart = readCart();
+  if(cart.length===0){ alert('Your cart is empty. Add products first.'); return; }
+  window.location.href = 'order.html';
+}
+
+/* init */
+render();
+</script>
+</body>
+</html>

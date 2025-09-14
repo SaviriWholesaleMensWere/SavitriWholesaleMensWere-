@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shirt Categories</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    .category-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    .category-card:hover {
+      transform: translateY(-5px);
+    }
+    .category-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .category-card h3 {
+      margin: 15px 0;
+      color: #333;
+    }
+    .category-card p {
+      padding: 0 15px 20px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Explore Our Shirt Categories</h1>
+  </header>
+
+  <div class="container">
+    <div class="category-grid">
+      <div class="category-card">
+        <img src="Images/Casual Shirt.webp">
+        <h3>Casual Shirts</h3>
+        <p>Perfect for everyday wear with comfort and style.</p>
+      </div>
+      <div class="category-card">
+        <img src="Images/Formal Shirt.webp" alt="Formal Shirts" alt="Formal Shirt">
+        <h3>Formal Shirts</h3>
+        <p>Ideal for office, meetings, and professional settings.</p>
+      </div>
+      <div class="category-card">
+        <img src="Images/Printed Shirt.webp" alt="Printed Shirts" alt="Printed Shirts">
+        <h3>Printed Shirts</h3>
+        <p>Bold patterns and vibrant designs for a trendy look.</p>
+      </div>
+      <div class="category-card">
+        <img src="Images/Denim Shirt.webp" alt="Formal Shirts" alt="Denim Shirts">
+        <h3>Denim Shirts</h3>
+        <p>Rugged and stylish, great for casual outings.</p>
+      </div>
+      <div class="category-card">
+        <img src="Images/Linen Shirt.webp" alt="Linen Shirts" alt="Linen Shirts">
+        <h3>Linen Shirts</h3>
+        <p>Lightweight and breathable for warm weather.</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

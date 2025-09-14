@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Order — Savitri Wholesale</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<style>
+  :root {
+    --bg-light: #f0f9ff; --bg-dark: #1e293b;
+    --card-light: #fff; --card-dark: #334155;
+    --text-light: #0f172a; --text-dark: #f1f5f9;
+    --primary: #0ea5e9; --primary-dark: #0284c7;
+  }
+  body{margin:0;font-family:'Inter',system-ui,Arial;background:var(--bg-light);color:var(--text-light);transition:0.3s;}
+  body.dark{background:var(--bg-dark);color:var(--text-dark);}
+  .container{max-width:950px;margin:30px auto;padding:20px;}
+  .card{background:var(--card-light);padding:25px;border-radius:20px;box-shadow:0 15px 40px rgba(0,0,0,0.08);transition:0.3s;}
+  body.dark .card{background:var(--card-dark);}
+  .card:hover{transform:translateY(-5px);box-shadow:0 25px 60px rgba(0,0,0,0.12);}
+  h2{margin-bottom:15px;color:var(--primary);font-weight:700;}
+  h3{margin-top:25px;margin-bottom:10px;color:var(--primary-dark);}
+  table{width:100%;border-collapse:collapse;margin-top:16px;border-radius:12px;overflow:hidden;transition:0.3s;}
+  th,td{padding:12px;text-align:left;}
+  th{background:var(--primary);color:#fff;font-weight:600;}
+  tr:nth-child(even) td{background:rgba(14,165,233,0.05);}
+  tr:hover td{background:rgba(14,165,233,0.15);cursor:pointer;}
+  .row{display:flex;justify-content:space-between;margin-top:10px;font-size:16px;}
+  .row.total{font-weight:800;font-size:20px;color:var(--primary-dark);}
+  input, select, textarea{width:100%;padding:12px;margin-top:6px;margin-bottom:12px;border:1px solid #ccc;border-radius:10px;font-size:14px;transition:0.3s;}
+  input:focus, select:focus, textarea:focus{border-color:var(--primary);box-shadow:0 0 8px rgba(14,165,233,0.3);outline:none;}
+  .btn{padding:14px 20px;border-radius:12px;border:none;font-weight:700;cursor:pointer;margin-top:14px;transition:0.3s;}
+  .btn-primary{background:linear-gradient(90deg,#0ea5e9,#0284c7);color:#fff;}
+  .btn-primary:hover{background:linear-gradient(90deg,#0284c7,#0ea5e9);transform:translateY(-2px);}
+  .btn-ghost{background:transparent;border:2px solid var(--primary);color:var(--primary);}
+  .btn-ghost:hover{background:var(--primary);color:#fff;transform:translateY(-2px);}
+  body.dark th{background:var(--primary-dark);}
+  body.dark tr:nth-child(even) td{background:rgba(255,255,255,0.05);}
+  .dark-toggle{position:fixed;top:20px;right:20px;background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:50px;cursor:pointer;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:100;transition:0.3s;}
+  .dark-toggle:hover{background:var(--primary-dark);transform:translateY(-2px);}
+  @media(max-width:600px){.row{flex-direction:column;align-items:flex-start;}.row.total{font-size:18px;}.btn{width:100%;}}
+</style>
+</head>
+<body>
+<button class="dark-toggle" onclick="toggleDarkMode()"><i class="fa-solid fa-moon"></i></button>
+
+<div class="container">
+  <div class="card" id="orderCard">
+    <h2><i class="fa-solid fa-cart-shopping"></i> Order Summary</h2>
+
+    <table id="orderTable">
+      <thead>
+        <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="row"><div>Subtotal</div><div id="sub">₹0</div></div>
+    <div class="row"><div>Shipping</div><div>Free</div></div>
+    <hr>
+    <div class="row total"><div>Total</div><div id="total">₹0</div></div>
+
+    <h3>Customer Details</h3>
+    <input type="text" id="custName" placeholder="Full Name" />
+    <input type="tel" id="custPhone" placeholder="Phone Number (10 digits)" />
+    <textarea id="custAddress" rows="3" placeholder="Address"></textarea>
+    <select id="custPayment">
+      <option value="Cash on Delivery">Cash on Delivery</option>
+      <option value="UPI / Online Payment">UPI / Online Payment</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+    </select>
+
+    <button class="btn btn-primary" onclick="sendWhatsApp()"><i class="fa-solid fa-paper-plane"></i> Place Order on WhatsApp</button>
+    <button class="btn btn-ghost" onclick="downloadInvoice()"><i class="fa-solid fa-download"></i> Download Invoice (PDF)</button>
+    <a href="index.html" style="display:inline-block; margin-left:10px; margin-top:14px;"><button class="btn btn-ghost">← Continue Shopping</button></a>
+  </div>
+</div>
+
+<script>
+function toggleDarkMode(){ document.body.classList.toggle('dark'); }
+
+const CART_KEY = 'cart_sw';
+function readCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return [];} }
+
+function render(){
+  const cart = readCart();
+  const tbody = document.querySelector('#orderTable tbody');
+  tbody.innerHTML = '';
+  if(cart.length === 0){
+    document.getElementById('orderCard').innerHTML = `
+      <h2>Your cart is empty</h2>
+      <p>Please add products from <a href="index.html">Shop</a> before placing an order.</p>
+      <a href="index.html"><button class="btn btn-primary" style="margin-top:12px;">Go to Shop</button></a>
+    `;
+    return;
+  }
+  let subtotal = 0;
+  cart.forEach(it=>{
+    subtotal += it.total;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${it.product}</td><td>${it.qty}</td><td>₹${it.price}</td><td>₹${it.total}</td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('sub').textContent = '₹'+subtotal;
+  document.getElementById('total').textContent = '₹'+subtotal;
+}
+
+// WhatsApp Order
+function sendWhatsApp(){
+  const cart = readCart();
+  if(cart.length===0){ alert('No items in cart'); return; }
+
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const addr = document.getElementById('custAddress').value.trim();
+  const pay = document.getElementById('custPayment').value;
+
+  if(!name || !phone || !addr){ alert('Please fill all customer details'); return; }
+
+  // simple phone validation (10 digits)
+  if(!/^\d{10}$/.test(phone)){ alert('Please enter a valid 10-digit phone number'); return; }
+
+  let msg = "📦 *New Order – Savitri Wholesale*\n\n";
+  msg += `👤 Customer: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${addr}\n\n🧾 Items Ordered:\n`;
+
+  cart.forEach((it,i)=>{ msg += `${i+1}. ${it.product} — ${it.qty} × ₹${it.price} = ₹${it.total}\n`; });
+
+  msg += `\n💰 Total Amount: ${document.getElementById('total').textContent}\n💳 Payment Method: ${pay}\n\n📅 Please confirm delivery time.`;
+
+  // seller phone - keep as your number
+  const sellerPhone = "919555104610";
+  window.open(`https://wa.me/${sellerPhone}?text=${encodeURIComponent(msg)}`);
+}
+
+// PDF Invoice
+function downloadInvoice(){
+  const { jsPDF } = window.jspdf;
+  const cart = readCart();
+  if(cart.length===0){ alert('Cart empty'); return; }
+
+  const doc = new jsPDF('p','pt','a4');
+  let y=40;
+  const currency = "INR";
+  try{
+    doc.setFontSize(22); doc.setTextColor(14,165,233); doc.setFont(undefined,'bold');
+    doc.text("Savitri Wholesale",40,y); y+=25;
+    doc.setFontSize(12); doc.setTextColor(0,0,0); doc.setFont(undefined,'normal');
+    doc.text("Add-Ruimandi,Nawabganj",40,y); y+=15;
+    doc.text("Dist-Ghazipur Pin Code-233001",40,y); y+=15;
+    doc.text("Uttar Pradesh",40,y); y+=20;
+
+    const invoiceNo = "SW-" + new Date().toISOString().slice(0,10).replace(/-/g,"") + "-" + Math.floor(Math.random()*1000);
+    doc.text("Invoice No: "+invoiceNo,400,40);
+    doc.text("Date: "+new Date().toLocaleDateString(),400,55);
+
+    const name=document.getElementById('custName').value.trim();
+    const phone=document.getElementById('custPhone').value.trim();
+    const addr=document.getElementById('custAddress').value.trim();
+    const pay=document.getElementById('custPayment').value;
+
+    y+=10; doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text("Customer Details:",40,y); y+=18;
+    doc.setFontSize(12); doc.setFont(undefined,'normal');
+    doc.text("Name: "+name,40,y); y+=14;
+    doc.text("Phone: "+phone,40,y); y+=14;
+    doc.text("Address: "+addr,40,y); y+=16;
+    doc.text("Payment Method: "+pay,40,y); y+=22;
+
+    // Table header
+    doc.setFont(undefined,'bold'); doc.setFillColor(14,165,233); doc.setTextColor(255,255,255);
+    const headers=["#","Product","Qty","Price","Total"]; let startX=40; const colWidth=[30,220,50,70,70];
+    headers.forEach((h,i)=>{ doc.rect(startX,y-12,colWidth[i],18,'F'); doc.text(h,startX+4,y); startX+=colWidth[i]; });
+    y+=12; doc.setFont(undefined,'normal'); doc.setTextColor(0,0,0);
+    y+=12;
+
+    cart.forEach((it,i)=>{
+      startX=40;
+      // try adding small product thumb if base64 or accessible — ignore failures
+      if(it.image){
+        try{ doc.addImage(it.image,'PNG',startX,y-10,20,20);}catch(e){/* ignore if not embeddable */} 
+      }
+      // write columns
+      doc.text(String(i+1),startX,y); startX+=colWidth[0];
+      doc.text(it.product, startX, y, {maxWidth: colWidth[1]-6}); startX+=colWidth[1];
+      doc.text(String(it.qty), startX, y); startX+=colWidth[2];
+      doc.text(String(it.price), startX, y); startX+=colWidth[3];
+      doc.text(String(it.total), startX, y); y+=22;
+
+      doc.setFontSize(10); doc.setFont(undefined,'italic');
+      let extra=`SKU:#${i+1000} | Category:${it.category||'Shirts'}`;
+      if(it.discount) extra+=` | Discount:${it.discount}%`;
+      doc.text(extra,45,y); y+=18; doc.setFontSize(12); doc.setFont(undefined,'normal');
+    });
+
+    y+=6; doc.setFont(undefined,'bold'); doc.setTextColor(14,165,233);
+    const totalText=document.getElementById('total').textContent.replace("₹",currency+" ");
+    doc.text("Total Amount: "+totalText,40,y); y+=18;
+    doc.setTextColor(0,0,0); doc.setFont(undefined,'normal');
+    doc.text("Please confirm delivery time.",40,y);
+
+    doc.save(invoiceNo+".pdf");
+  } catch(err){
+    console.error('Invoice generation failed', err);
+    alert('Could not generate PDF. Try again.');
+  }
+}
+
+// initial render
+render();
+</script>
+</body>
+</html>
