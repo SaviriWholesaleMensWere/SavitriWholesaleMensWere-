@@ -1,3 +1,4 @@
+<!-- cart.html -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -60,7 +61,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
 <script>
@@ -69,18 +69,14 @@ function readCart(){ try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}
 function writeCart(c){
   localStorage.setItem(CART_KEY, JSON.stringify(c));
   render();
-  updateCartCount(); // keep header count in sync across pages (index reads same key)
+  updateCartCount();
 }
 
 function updateCartCount(){
-  // update a global count key (header on index.html reads from this)
   const cart = readCart();
   const total = cart.reduce((s,it)=>s + (it.qty||0), 0);
-  // store a simple number too for backward compatibility
   localStorage.setItem('cartCount', total);
-  // if this page had a header cart-count element, update it
-  const el = document.getElementById('cart-count');
-  if(el) el.textContent = total;
+  document.querySelectorAll('#cart-count, #cart-count-mobile').forEach(el=>el.textContent = total);
 }
 
 function render(){
