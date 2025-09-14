@@ -87,16 +87,30 @@ th{background:var(--brand);color:#fff}
 
 <script>
 const CART_KEY = 'cart_sw';
-function readCart(){ try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return [];} }
-function writeCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); render(); updateCartCount(); }
 
+// read cart from localStorage
+function readCart(){ 
+  try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return [];} 
+}
+
+// write cart to localStorage
+function writeCart(c){ 
+  localStorage.setItem(CART_KEY, JSON.stringify(c)); 
+  render(); 
+  updateCartCount(); 
+}
+
+// update cart count everywhere
 function updateCartCount(){
   const cart = readCart();
   const total = cart.reduce((s,it)=>s + (it.qty||0), 0);
   localStorage.setItem('cartCount', total);
-  document.querySelectorAll('#cart-count, #cart-count-mobile').forEach(el=>el.textContent = total);
+  document.querySelectorAll('#cart-count, #cart-count-mobile').forEach(el=>{
+    if(el) el.textContent = total;
+  });
 }
 
+// render cart table
 function render(){
   const tbody = document.querySelector('#cartTable tbody');
   tbody.innerHTML = '';
@@ -107,7 +121,8 @@ function render(){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td style="display:flex;gap:10px;align-items:center">
-        <img src="${it.image||'Images/img1.webp'}" style="width:72px;height:72px;object-fit:cover;border-radius:6px">
+        <img src="${it.image || 'images/img1.webp'}" 
+             style="width:72px;height:72px;object-fit:cover;border-radius:6px">
         <div>
           <div style="font-weight:700">${it.product}</div>
           <div class="muted" style="font-size:13px">SKU: SW-${idx+1}</div>
@@ -131,10 +146,39 @@ function render(){
   updateCartCount();
 }
 
-function changeQty(i, delta){ const cart = readCart(); if(!cart[i]) return; cart[i].qty=Math.max(1, cart[i].qty+delta); cart[i].total=cart[i].qty*cart[i].price; writeCart(cart); }
-function removeItem(i){ const cart = readCart(); cart.splice(i,1); writeCart(cart); }
-function clearCart(){ if(!confirm('Clear entire cart?')) return; localStorage.removeItem(CART_KEY); render(); updateCartCount(); }
-function proceedToOrder(){ const cart=readCart(); if(cart.length===0){ alert('Your cart is empty. Add products first.'); return; } window.location.href='order.html'; }
+// change quantity
+function changeQty(i, delta){ 
+  const cart = readCart(); 
+  if(!cart[i]) return; 
+  cart[i].qty=Math.max(1, cart[i].qty+delta); 
+  cart[i].total=cart[i].qty*cart[i].price; 
+  writeCart(cart); 
+}
+
+// remove item
+function removeItem(i){ 
+  const cart = readCart(); 
+  cart.splice(i,1); 
+  writeCart(cart); 
+}
+
+// clear cart
+function clearCart(){ 
+  if(!confirm('Clear entire cart?')) return; 
+  localStorage.removeItem(CART_KEY); 
+  render(); 
+  updateCartCount(); 
+}
+
+// go to order page
+function proceedToOrder(){ 
+  const cart=readCart(); 
+  if(cart.length===0){ 
+    alert('Your cart is empty. Add products first.'); 
+    return; 
+  } 
+  window.location.href='order.html'; 
+}
 
 render();
 </script>
