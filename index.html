@@ -34,7 +34,7 @@
   a { color: inherit; text-decoration: none; transition: 0.2s; }
   a:hover { color: var(--accent); }
 
-  .container { max-width: var(--container); margin: 0 auto; padding: 0 16px; }
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 10px; }
 
 /* Sticky Header */
 header {
@@ -96,7 +96,7 @@ footer {
 header {
   background: #0f172a;
   color: #fff;
-  padding: 15px 20px;
+  padding: px 0px;
   display: flex;
   align-items: center;
 }
@@ -109,9 +109,9 @@ header nav a {
   display: flex; 
   align-items: center; 
   justify-content: space-between; 
-  padding: 20px 40px; 
+  padding: 0px 80px; 
 }
-nav { margin-left: 490px; display:flex; align-items:center; gap:6px; }
+nav { margin-left: 410px; display:flex; align-items:left; gap:6px; }
 .brand { font-weight: 800; font-size: 20px; letter-spacing: 0.4px; }
 .brand span { color: var(--accent); }
 nav a { margin-left: 14px; font-weight: 600; }
@@ -252,14 +252,28 @@ nav a:hover { color: var(--accent); }
     display: block;
   }
 }
+body { font-family: Arial, sans-serif; background:#f8f9fa; margin:0; }
+
+
+
+    /* Navbar */
+
+    .navbar { display:flex; justify-content:space-between; align-items:center;
+
+              background:#111;color:#fff; }
+
+    .navbar .logo img { height:80px; }
+
+
 
   </style>
 </head>
 <body>
  <header>
+ <div class="navbar">
+    <div class="logo"><img src="Images/logo.png" alt="Logo"></div>
   <div class="container nav">
     <div class="brand">Savitri <span>Wholesale</span> Men's Wear</div>
-    
     <!-- Hamburger Button (Mobile Only) -->
     <div class="hamburger" onclick="toggleMenu()">☰</div>
 
