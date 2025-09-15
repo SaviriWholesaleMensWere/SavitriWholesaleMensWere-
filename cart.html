@@ -19,7 +19,7 @@ a{text-decoration:none;color:var(--brand)}
 
 .table-wrapper{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;margin-top:12px;min-width:500px;}
-th,td{padding:12px;text-align:left;border-bottom:1px solid #eee}
+th,td{padding:12px;text-align:left;border-bottom:1px solid #eee;vertical-align:middle;}
 th{background:var(--brand);color:#fff}
 
 .qty-control{display:inline-flex;align-items:center;border-radius:8px;overflow:hidden;border:1px solid #eee}
@@ -36,12 +36,33 @@ th{background:var(--brand);color:#fff}
 
 .layout{display:flex;gap:18px;flex-wrap:wrap}
 
+/* cart images */
+.cart-item-img{
+  width:72px;
+  height:72px;
+  object-fit:cover;
+  border-radius:6px;
+  display:block;
+}
+
 @media(max-width:900px){
   .layout{flex-direction:column}
   .summary{margin-left:0;margin-top:16px}
   table{min-width:100%;}
   th, td{padding:10px;}
   .qty-control button{width:28px;height:28px;font-weight:600;}
+}
+
+@media(max-width:600px){
+  .cart-item-img{
+    width:50px;
+    height:50px;
+  }
+  td:first-child{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
 }
 
 @media(max-width:480px){
@@ -88,41 +109,47 @@ th{background:var(--brand);color:#fff}
 <script>
 const CART_KEY = 'cart_sw';
 
-// read cart from localStorage
-function readCart(){ 
-  try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return [];} 
+// Map of products and their images
+const imageMap = {
+  'Plain Shirt — Regular': 'Images/img60.jpg',
+  'Casual Shirt': 'Images/img61.jpg',
+  'Formal Shirt': 'Images/img62.jpg',
+  'Printed Shirt': 'Images/img63.jpg'
+};
+
+// Read cart from localStorage
+function readCart(){
+  try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+  catch { return []; }
 }
 
-// write cart to localStorage
-function writeCart(c){ 
-  localStorage.setItem(CART_KEY, JSON.stringify(c)); 
-  render(); 
-  updateCartCount(); 
+// Write cart to localStorage and render
+function writeCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  render();
 }
 
-// update cart count everywhere
+// Update cart count (for header if needed)
 function updateCartCount(){
   const cart = readCart();
   const total = cart.reduce((s,it)=>s + (it.qty||0), 0);
   localStorage.setItem('cartCount', total);
-  document.querySelectorAll('#cart-count, #cart-count-mobile').forEach(el=>{
-    if(el) el.textContent = total;
-  });
+  document.querySelectorAll('#cart-count, #cart-count-mobile').forEach(el => el.textContent = total);
 }
 
-// render cart table
+// Render cart table
 function render(){
   const tbody = document.querySelector('#cartTable tbody');
   tbody.innerHTML = '';
   const cart = readCart();
   let subtotal = 0;
-  cart.forEach((it, idx)=>{
+
+  cart.forEach((it, idx) => {
     subtotal += it.total;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="display:flex;gap:10px;align-items:center">
-        <img src="${it.image || 'images/img1.webp'}" 
-             style="width:72px;height:72px;object-fit:cover;border-radius:6px">
+      <td>
+        <img src="${it.image||'Images/img2.jpg'}" class="cart-item-img">
         <div>
           <div style="font-weight:700">${it.product}</div>
           <div class="muted" style="font-size:13px">SKU: SW-${idx+1}</div>
@@ -141,45 +168,61 @@ function render(){
     `;
     tbody.appendChild(tr);
   });
+
   document.getElementById('sub').textContent = '₹'+subtotal;
   document.getElementById('total').textContent = '₹'+subtotal;
   updateCartCount();
 }
 
-// change quantity
-function changeQty(i, delta){ 
-  const cart = readCart(); 
-  if(!cart[i]) return; 
-  cart[i].qty=Math.max(1, cart[i].qty+delta); 
-  cart[i].total=cart[i].qty*cart[i].price; 
-  writeCart(cart); 
+// Change quantity
+function changeQty(i, delta){
+  const cart = readCart();
+  if(!cart[i]) return;
+  cart[i].qty = Math.max(1, cart[i].qty + delta);
+  cart[i].total = cart[i].qty * cart[i].price;
+  writeCart(cart);
 }
 
-// remove item
-function removeItem(i){ 
-  const cart = readCart(); 
-  cart.splice(i,1); 
-  writeCart(cart); 
+// Remove item
+function removeItem(i){
+  const cart = readCart();
+  cart.splice(i,1);
+  writeCart(cart);
 }
 
-// clear cart
-function clearCart(){ 
-  if(!confirm('Clear entire cart?')) return; 
-  localStorage.removeItem(CART_KEY); 
-  render(); 
-  updateCartCount(); 
+// Clear cart
+function clearCart(){
+  if(!confirm('Clear entire cart?')) return;
+  localStorage.removeItem(CART_KEY);
+  render();
 }
 
-// go to order page
-function proceedToOrder(){ 
-  const cart=readCart(); 
-  if(cart.length===0){ 
-    alert('Your cart is empty. Add products first.'); 
-    return; 
-  } 
-  window.location.href='order.html'; 
+// Proceed to checkout
+function proceedToOrder(){
+  const cart = readCart();
+  if(cart.length === 0){
+    alert('Your cart is empty. Add products first.');
+    return;
+  }
+  window.location.href='order.html';
 }
 
+// Add item to cart (from product page)
+function addToCart(product, price){
+  const cart = readCart();
+  const existing = cart.find(i=>i.product === product);
+  const img = imageMap[product] || 'Images/img2.jpg';
+  if(existing){
+    existing.qty++;
+    existing.total = existing.qty * existing.price;
+  } else {
+    cart.push({product, price, qty:1, total:price, image:img});
+  }
+  writeCart(cart);
+  alert(product + ' added to cart');
+}
+
+// Initialize
 render();
 </script>
 </body>
