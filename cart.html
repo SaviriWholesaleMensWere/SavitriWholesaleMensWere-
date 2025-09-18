@@ -1,30 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Cart — Savitri Wholesale</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savitri Wholesale Cart</title>
 <style>
 :root{
   --bg:#f6f9fb; --card:#fff; --brand:#0ea5e9; --accent:#e91e63;
   --muted:#6b7280; --radius:12px;
 }
-*{box-sizing:border-box}
 body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0f172a}
-
 .container{max-width:1000px;margin:28px auto;padding:18px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px; flex-wrap:wrap}
-a{text-decoration:none;color:var(--brand)}
 .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:0 10px 30px rgba(2,6,23,0.06)}
-
+a{text-decoration:none;color:var(--brand)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px; flex-wrap:wrap}
 .table-wrapper{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;margin-top:12px;min-width:500px;}
 th,td{padding:12px;text-align:left;border-bottom:1px solid #eee;vertical-align:middle;}
 th{background:var(--brand);color:#fff}
-
 .qty-control{display:inline-flex;align-items:center;border-radius:8px;overflow:hidden;border:1px solid #eee}
 .qty-control button{width:34px;height:34px;border:none;background:#fafafa;cursor:pointer;font-weight:700}
-
 .summary{max-width:320px;margin-left:18px;flex-shrink:0}
 .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 .btn{padding:10px 14px;border-radius:8px;border:none;font-weight:700;cursor:pointer}
@@ -33,17 +28,8 @@ th{background:var(--brand);color:#fff}
 .muted{color:var(--muted)}
 .link-remove{color:var(--accent);cursor:pointer;text-decoration:none}
 .link-remove:hover{text-decoration:underline}
-
 .layout{display:flex;gap:18px;flex-wrap:wrap}
-
-/* cart images */
-.cart-item-img{
-  width:72px;
-  height:72px;
-  object-fit:cover;
-  border-radius:6px;
-  display:block;
-}
+.cart-item-img{width:72px;height:72px;object-fit:cover;border-radius:6px;display:block}
 
 @media(max-width:900px){
   .layout{flex-direction:column}
@@ -52,19 +38,10 @@ th{background:var(--brand);color:#fff}
   th, td{padding:10px;}
   .qty-control button{width:28px;height:28px;font-weight:600;}
 }
-
 @media(max-width:600px){
-  .cart-item-img{
-    width:50px;
-    height:50px;
-  }
-  td:first-child{
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
+  .cart-item-img{width:50px;height:50px;}
+  td:first-child{display:flex;align-items:center;gap:8px;}
 }
-
 @media(max-width:480px){
   .top{flex-direction:column;align-items:flex-start;gap:8px;}
   .btn{width:100%; margin-bottom:8px;}
@@ -74,11 +51,13 @@ th{background:var(--brand);color:#fff}
 </head>
 <body>
 <div class="container">
+
   <div class="top">
     <div><a href="index.html">← Continue Shopping</a></div>
     <div style="font-weight:800">Your Cart</div>
   </div>
 
+  <!-- Cart Table + Summary -->
   <div class="layout">
     <div style="flex:1">
       <div class="card table-wrapper">
@@ -104,12 +83,11 @@ th{background:var(--brand);color:#fff}
       </div>
     </div>
   </div>
+
 </div>
 
 <script>
-const CART_KEY = 'cart_sw';
-
-// Map of products and their images
+// Product images map
 const imageMap = {
   'Plain Shirt — Regular': 'img60.jpg',
   'Casual Shirt': 'img61.jpg',
@@ -117,25 +95,12 @@ const imageMap = {
   'Printed Shirt': 'img63.jpg'
 };
 
-// Read cart from localStorage
-function readCart(){
-  try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-  catch { return []; }
-}
+// Cart key
+const CART_KEY = 'cart_sw';
 
-// Write cart to localStorage and render
-function writeCart(cart){
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  render();
-}
-
-// Update cart count (for header if needed)
-function updateCartCount(){
-  const cart = readCart();
-  const total = cart.reduce((s,it)=>s + (it.qty||0), 0);
-  localStorage.setItem('cartCount', total);
-  document.querySelectorAll('#cart-count, #cart-count-mobile').forEach(el => el.textContent = total);
-}
+// Read/write cart
+function readCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)) || [] } catch{ return [] } }
+function writeCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); render(); }
 
 // Render cart table
 function render(){
@@ -144,14 +109,17 @@ function render(){
   const cart = readCart();
   let subtotal = 0;
 
-  cart.forEach((it, idx) => {
+  cart.forEach((it, idx)=>{
+    it.total = it.qty * it.price;
     subtotal += it.total;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
-        <img src="${it.image||'img2.jpg'}" class="cart-item-img">
+        <img src="${it.image}" class="cart-item-img">
         <div>
           <div style="font-weight:700">${it.product}</div>
+          <div class="muted" style="font-size:13px">Size: ${it.size || '-'}, Colour: ${it.colour || '-'}</div>
           <div class="muted" style="font-size:13px">SKU: SW-${idx+1}</div>
         </div>
       </td>
@@ -168,79 +136,45 @@ function render(){
     `;
     tbody.appendChild(tr);
   });
-// Inside render() function, update tbody innerHTML
-tr.innerHTML = `
-  <td>
-    <img src="${it.image||'img2.jpg'}" class="cart-item-img">
-    <div>
-      <div style="font-weight:700">${it.product}</div>
-      <div class="muted" style="font-size:13px">Size: ${it.size || '-'}, Colour: ${it.colour || '-'}</div>
-      <div class="muted" style="font-size:13px">SKU: SW-${idx+1}</div>
-    </div>
-  </td>
-  <td>
-    <div class="qty-control">
-      <button onclick="changeQty(${idx}, -1)">−</button>
-      <div style="padding:8px 12px;min-width:40px;text-align:center">${it.qty}</div>
-      <button onclick="changeQty(${idx}, 1)">+</button>
-    </div>
-  </td>
-  <td>₹${it.price}</td>
-  <td>₹${it.total}</td>
-  <td><a class="link-remove" onclick="removeItem(${idx})">Remove</a></td>
-`;
 
   document.getElementById('sub').textContent = '₹'+subtotal;
   document.getElementById('total').textContent = '₹'+subtotal;
   updateCartCount();
 }
 
-// Change quantity
+// Quantity, remove, clear, checkout
 function changeQty(i, delta){
   const cart = readCart();
   if(!cart[i]) return;
-  cart[i].qty = Math.max(1, cart[i].qty + delta);
-  cart[i].total = cart[i].qty * cart[i].price;
+  cart[i].qty = Math.max(1, cart[i].qty+delta);
+  cart[i].total = cart[i].qty*cart[i].price;
   writeCart(cart);
 }
 
-// Remove item
 function removeItem(i){
   const cart = readCart();
   cart.splice(i,1);
   writeCart(cart);
 }
 
-// Clear cart
 function clearCart(){
   if(!confirm('Clear entire cart?')) return;
   localStorage.removeItem(CART_KEY);
   render();
 }
 
-// Proceed to checkout
 function proceedToOrder(){
   const cart = readCart();
-  if(cart.length === 0){
-    alert('Your cart is empty. Add products first.');
-    return;
-  }
+  if(cart.length===0){ alert('Your cart is empty. Add products first.'); return; }
   window.location.href='order.html';
 }
 
-// Add item to cart (from product page)
-function addToCart(product, price){
+// Update cart count (optional)
+function updateCartCount(){
   const cart = readCart();
-  const existing = cart.find(i=>i.product === product);
-  const img = imageMap[product] || 'img2.jpg';
-  if(existing){
-    existing.qty++;
-    existing.total = existing.qty * existing.price;
-  } else {
-    cart.push({product, price, qty:1, total:price, image:img});
-  }
-  writeCart(cart);
-  alert(product + ' added to cart');
+  const total = cart.reduce((s,it)=>s+(it.qty||0),0);
+  localStorage.setItem('cartCount', total);
+  document.querySelectorAll('#cart-count, #cart-count-mobile').forEach(el=>el.textContent=total);
 }
 
 // Initialize

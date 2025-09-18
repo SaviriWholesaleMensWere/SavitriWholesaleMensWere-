@@ -43,7 +43,8 @@
   .price-old{text-decoration:line-through;color:#888}
   .price-new{color:var(--accent);font-weight:800;font-size:20px}
   .tags{display:flex;gap:8px;margin-top:8px}
-  .tag{padding:6px 10px;border-radius:8px;background:#f1f5f9;font-weight:600;font-size:13px}
+  .tag{padding:6px 10px;border-radius:8px;background:#f1f5f9;font-weight:600;font-size:13px;cursor:pointer}
+  .tag.selected{background:var(--brand);color:#fff}
   .btn{padding:10px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
   .btn-primary{background:var(--brand);color:#fff}
   .btn-ghost{background:#fff;border:1px solid #ddd}
@@ -69,13 +70,13 @@
   <div class="card product-grid">
     <div>
       <div class="image-wrap">
-        <img id="mainImage" class="main-img" src="img1.webp" alt="Formal Shirt">
+        <img id="mainImage" class="main-img" src="Images/img1.webp" alt="Formal Shirt">
       </div>
       <div class="thumbs">
-        <img src="img1.webp" class="thumb active" onclick="pick(this)">
-        <img src="img2.webp" class="thumb" onclick="pick(this)">
-        <img src="img3.webp" class="thumb" onclick="pick(this)">
-        <img src="img5.webp" class="thumb" onclick="pick(this)">
+        <img src="Images/img1.webp" class="thumb active" onclick="pick(this)">
+        <img src="Images/img2.webp" class="thumb" onclick="pick(this)">
+        <img src="Images/img3.webp" class="thumb" onclick="pick(this)">
+        <img src="Images/img5.webp" class="thumb" onclick="pick(this)">
       </div>
     </div>
 
@@ -88,19 +89,30 @@
         <div class="price-new">₹399</div>
       </div>
 
+      <!-- Size Selection -->
+      <div style="margin-top:18px">
+        <h3>Select Size</h3>
+        <div id="sizeOptions" style="display:flex;gap:8px;">
+          <div class="tag" onclick="selectSize(this)">M</div>
+          <div class="tag" onclick="selectSize(this)">L</div>
+          <div class="tag" onclick="selectSize(this)">XL</div>
+        </div>
+      </div>
+
+      <!-- Colour Selection -->
+      <div style="margin-top:18px">
+        <h3>Select Colour</h3>
+        <div id="colourOptions" style="display:flex;gap:8px;">
+          <div class="tag" onclick="selectColour(this)">Blue</div>
+          <div class="tag" onclick="selectColour(this)">White</div>
+          <div class="tag" onclick="selectColour(this)">Black</div>
+        </div>
+      </div>
+
       <div style="margin-top:18px">
         <button class="btn btn-primary" onclick="buyNow('Formal Cotton Shirt',399)">Buy Now</button>
         <button class="btn btn-ghost" onclick="addToCart('Formal Cotton Shirt',399)">Add to Cart</button>
         <button class="btn btn-wish" onclick="toggleWish(this)">♡ Wishlist</button>
-      </div>
-
-      <div style="margin-top:18px">
-        <h3>Available Sizes</h3>
-        <div style="display:flex;gap:8px;">
-          <div class="tag">M</div>
-          <div class="tag">L</div>
-          <div class="tag">XL</div>
-        </div>
       </div>
 
       <div style="margin-top:18px">
@@ -111,57 +123,14 @@
           <li>Wash: Machine wash cold</li>
         </ul>
       </div>
-	  <!-- Product Description -->
-<table style="width:70%; border-collapse: collapse; margin-top:20px; box-shadow:0 4px 20px rgba(0,0,0,0.05); border-radius:12px; overflow:hidden;">
-  <tr style="background:#0ea5e9; color:#fff; text-align:left;">
-    <th style="padding:12px;">Product Details</th>
-    <th style="padding:12px;"></th>
-  </tr>
-  <tr>
-    <td style="padding:12px; width:150px; font-weight:600; vertical-align:top;">Style Code</td>
-    <td style="padding:12px;">SHHDHJSHS525874</td>
-  </tr>
-  <tr>
-    <td style="padding:12px; font-weight:600; vertical-align:top;">Sleeves</td>
-    <td style="padding:12px;">Full Sleeves</td>
-  </tr>
-  <tr>
-    <td style="padding:12px; font-weight:600; vertical-align:top;">Pattern</td>
-    <td style="padding:12px;">Solid</td>
-  </tr>
-  <tr>
-    <td style="padding:12px; font-weight:600; vertical-align:top;">Occasion</td>
-    <td style="padding:12px;">Casual</td>
-  </tr>
-  <tr>
-    <td style="padding:12px; font-weight:600; vertical-align:top;">Cuffs</td>
-    <td style="padding:12px;">Regular Cuffs</td>
-  </tr>
-  <tr>
-    <td style="padding:12px; font-weight:600; vertical-align:top;">Product Type</td>
-    <td style="padding:12px;">Shirt</td>
-  </tr>
-  <tr>
-    <td style="padding:12px; font-weight:600; vertical-align:top;">Model Size</td>
-    <td style="padding:12px;">This model has Height 6'2", Chest 39", Waist 31" and is wearing Size 40</td>
-  </tr>
-  <tr>
-    <td style="padding:12px; font-weight:600; vertical-align:top;">Collar</td>
-    <td style="padding:12px;">Regular Collar</td>
-  </tr>
-</table>
-
-	   <div class="tags">
-        <div class="tag">Free Delivery</div>
-        <div class="tag">7 Day Return</div>
-        <div class="tag">Made in India</div>
-      </div>
     </div>
   </div>
 </div>
 
 <script>
 const CART_KEY = 'cart_sw';
+let selectedSize = null;
+let selectedColour = null;
 
 function updateCartCount(){
   const cart = readCart();
@@ -183,22 +152,39 @@ function toggleWish(btn){
 function readCart(){try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{return []}}
 function writeCart(c){localStorage.setItem(CART_KEY,JSON.stringify(c))}
 
+// Size & Colour selection
+function selectSize(el){
+  document.querySelectorAll('#sizeOptions .tag').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSize = el.textContent;
+}
+function selectColour(el){
+  document.querySelectorAll('#colourOptions .tag').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedColour = el.textContent;
+}
+
 const imageMap = {'Formal Cotton Shirt':'Images/img1.webp'};
 
 function addToCart(product,price){
+  if(!selectedSize || !selectedColour){
+    alert('Please select size and colour first');
+    return;
+  }
   const cart = readCart();
-  const existing = cart.find(i=>i.product===product);
+  const existing = cart.find(i=>i.product===product && i.size===selectedSize && i.colour===selectedColour);
   if(existing){existing.qty++;existing.total=existing.qty*existing.price}
-  else{cart.push({product,price,qty:1,total:price,image:imageMap[product]})}
+  else{cart.push({product,price,qty:1,total:price,image:imageMap[product],size:selectedSize,colour:selectedColour})}
   writeCart(cart);
   updateCartCount();
-  alert(product+' added to cart');
+  alert(`${product} (${selectedSize}, ${selectedColour}) added to cart`);
 }
 
 function buyNow(product,price){
   addToCart(product,price);
   window.location.href='cart.html';
 }
+
 // Zoom effect
 const mainImage=document.getElementById("mainImage");
 mainImage.addEventListener("mousemove",function(e){
@@ -208,9 +194,8 @@ mainImage.addEventListener("mousemove",function(e){
   mainImage.style.transformOrigin=`${x}% ${y}%`;
   mainImage.style.transform="scale(2)";
 });
-mainImage.addEventListener("mouseleave",function(){
-  mainImage.style.transform="scale(1)";
-});
+mainImage.addEventListener("mouseleave",function(){mainImage.style.transform="scale(1)";});
+
 // Initialize cart count on page load
 updateCartCount();
 </script>

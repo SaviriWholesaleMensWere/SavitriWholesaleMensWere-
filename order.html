@@ -51,7 +51,7 @@
 
     <table id="orderTable">
       <thead>
-        <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+        <tr><th>Product</th><th>Size</th><th>Colour</th><th>Qty</th><th>Price</th><th>Total</th></tr>
       </thead>
       <tbody></tbody>
     </table>
@@ -99,7 +99,7 @@ function render(){
   cart.forEach(it=>{
     subtotal += it.total;
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${it.product}</td><td>${it.qty}</td><td>₹${it.price}</td><td>₹${it.total}</td>`;
+    tr.innerHTML = `<td>${it.product}</td><td>${it.size}</td><td>${it.colour}</td><td>${it.qty}</td><td>₹${it.price}</td><td>₹${it.total}</td>`;
     tbody.appendChild(tr);
   });
   document.getElementById('sub').textContent = '₹'+subtotal;
@@ -117,23 +117,20 @@ function sendWhatsApp(){
   const pay = document.getElementById('custPayment').value;
 
   if(!name || !phone || !addr){ alert('Please fill all customer details'); return; }
-
-  // simple phone validation (10 digits)
   if(!/^\d{10}$/.test(phone)){ alert('Please enter a valid 10-digit phone number'); return; }
 
-  let msg = "📦 *New Order – Savitri Wholesale*\n\n";
+  const invoiceNo = "SW-" + new Date().toISOString().slice(0,10).replace(/-/g,"") + "-" + Math.floor(Math.random()*1000);
+
+  let msg = `📦 *New Order – Savitri Wholesale*\nInvoice: ${invoiceNo}\n\n`;
   msg += `👤 Customer: ${name}\n📞 Phone: ${phone}\n🏠 Address: ${addr}\n\n🧾 Items Ordered:\n`;
+  cart.forEach((it,i)=>{ msg += `${i+1}. ${it.product} (${it.size}, ${it.colour}) — ${it.qty} × ₹${it.price} = ₹${it.total}\n`; });
+  msg += `\n💰 Total Amount: ₹${document.getElementById('total').textContent.replace("₹","")}\n💳 Payment Method: ${pay}\n\n📅 Please confirm delivery time.`;
 
-  cart.forEach((it,i)=>{ msg += `${i+1}. ${it.product} — ${it.qty} × ₹${it.price} = ₹${it.total}\n`; });
-
-  msg += `\n💰 Total Amount: ${document.getElementById('total').textContent}\n💳 Payment Method: ${pay}\n\n📅 Please confirm delivery time.`;
-
-  // seller phone - keep as your number
   const sellerPhone = "919555104610";
   window.open(`https://wa.me/${sellerPhone}?text=${encodeURIComponent(msg)}`);
 }
 
-// PDF Invoice
+// PDF Invoice (no images)
 function downloadInvoice(){
   const { jsPDF } = window.jspdf;
   const cart = readCart();
@@ -142,67 +139,54 @@ function downloadInvoice(){
   const doc = new jsPDF('p','pt','a4');
   let y=40;
   const currency = "INR";
-  try{
-    doc.setFontSize(22); doc.setTextColor(14,165,233); doc.setFont(undefined,'bold');
-    doc.text("Savitri Wholesale",40,y); y+=25;
-    doc.setFontSize(12); doc.setTextColor(0,0,0); doc.setFont(undefined,'normal');
-    doc.text("Add-Ruimandi,Nawabganj",40,y); y+=15;
-    doc.text("Dist-Ghazipur Pin Code-233001",40,y); y+=15;
-    doc.text("Uttar Pradesh",40,y); y+=20;
 
-    const invoiceNo = "SW-" + new Date().toISOString().slice(0,10).replace(/-/g,"") + "-" + Math.floor(Math.random()*1000);
-    doc.text("Invoice No: "+invoiceNo,400,40);
-    doc.text("Date: "+new Date().toLocaleDateString(),400,55);
+  const invoiceNo = "SW-" + new Date().toISOString().slice(0,10).replace(/-/g,"") + "-" + Math.floor(Math.random()*1000);
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const addr=document.getElementById('custAddress').value.trim();
+  const pay=document.getElementById('custPayment').value;
 
-    const name=document.getElementById('custName').value.trim();
-    const phone=document.getElementById('custPhone').value.trim();
-    const addr=document.getElementById('custAddress').value.trim();
-    const pay=document.getElementById('custPayment').value;
+  doc.setFontSize(22); doc.setTextColor(14,165,233); doc.setFont(undefined,'bold');
+  doc.text("Savitri Wholesale",40,y); y+=25;
+  doc.setFontSize(12); doc.setTextColor(0,0,0); doc.setFont(undefined,'normal');
+  doc.text("Add-Ruimandi,Nawabganj",40,y); y+=15;
+  doc.text("Dist-Ghazipur Pin Code-233001",40,y); y+=15;
+  doc.text("Uttar Pradesh",40,y); y+=20;
+  doc.text("Invoice No: "+invoiceNo,400,40);
+  doc.text("Date: "+new Date().toLocaleDateString(),400,55);
 
-    y+=10; doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text("Customer Details:",40,y); y+=18;
-    doc.setFontSize(12); doc.setFont(undefined,'normal');
-    doc.text("Name: "+name,40,y); y+=14;
-    doc.text("Phone: "+phone,40,y); y+=14;
-    doc.text("Address: "+addr,40,y); y+=16;
-    doc.text("Payment Method: "+pay,40,y); y+=22;
+  y+=10; doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text("Customer Details:",40,y); y+=18;
+  doc.setFontSize(12); doc.setFont(undefined,'normal');
+  doc.text("Name: "+name,40,y); y+=14;
+  doc.text("Phone: "+phone,40,y); y+=14;
+  doc.text("Address: "+addr,40,y); y+=16;
+  doc.text("Payment Method: "+pay,40,y); y+=22;
 
-    // Table header
-    doc.setFont(undefined,'bold'); doc.setFillColor(14,165,233); doc.setTextColor(255,255,255);
-    const headers=["#","Product","Qty","Price","Total"]; let startX=40; const colWidth=[30,220,50,70,70];
-    headers.forEach((h,i)=>{ doc.rect(startX,y-12,colWidth[i],18,'F'); doc.text(h,startX+4,y); startX+=colWidth[i]; });
-    y+=12; doc.setFont(undefined,'normal'); doc.setTextColor(0,0,0);
-    y+=12;
+  // Table header
+  doc.setFont(undefined,'bold'); doc.setFillColor(14,165,233); doc.setTextColor(255,255,255);
+  const headers=["#","Product","Size","Colour","Qty","Price","Total"]; let startX=40; const colWidth=[30,120,50,50,40,50,50];
+  headers.forEach((h,i)=>{ doc.rect(startX,y-12,colWidth[i],18,'F'); doc.text(h,startX+4,y); startX+=colWidth[i]; });
+  y+=12; doc.setFont(undefined,'normal'); doc.setTextColor(0,0,0);
+  y+=12;
 
-    cart.forEach((it,i)=>{
-      startX=40;
-      // try adding small product thumb if base64 or accessible — ignore failures
-      if(it.image){
-        try{ doc.addImage(it.image,'PNG',startX,y-10,20,20);}catch(e){/* ignore if not embeddable */} 
-      }
-      // write columns
-      doc.text(String(i+1),startX,y); startX+=colWidth[0];
-      doc.text(it.product, startX, y, {maxWidth: colWidth[1]-6}); startX+=colWidth[1];
-      doc.text(String(it.qty), startX, y); startX+=colWidth[2];
-      doc.text(String(it.price), startX, y); startX+=colWidth[3];
-      doc.text(String(it.total), startX, y); y+=22;
+  cart.forEach((it,i)=>{
+    startX=40;
+    doc.text(String(i+1),startX,y); startX+=colWidth[0];
+    doc.text(it.product, startX, y, {maxWidth: colWidth[1]-6}); startX+=colWidth[1];
+    doc.text(it.size, startX, y); startX+=colWidth[2];
+    doc.text(it.colour, startX, y); startX+=colWidth[3];
+    doc.text(String(it.qty), startX, y); startX+=colWidth[4];
+    doc.text(String(it.price), startX, y); startX+=colWidth[5];
+    doc.text(String(it.total), startX, y); y+=22;
+  });
 
-      doc.setFontSize(10); doc.setFont(undefined,'italic');
-      let extra=`SKU:#${i+1000} | Category:${it.category||'Shirts'}`;
-      if(it.discount) extra+=` | Discount:${it.discount}%`;
-      doc.text(extra,45,y); y+=18; doc.setFontSize(12); doc.setFont(undefined,'normal');
-    });
+  y+=6; doc.setFont(undefined,'bold'); doc.setTextColor(14,165,233);
+  const totalText=document.getElementById('total').textContent.replace("₹",currency+" ");
+  doc.text("Total Amount: "+totalText,40,y); y+=18;
+  doc.setTextColor(0,0,0); doc.setFont(undefined,'normal');
+  doc.text("Please confirm delivery time.",40,y);
 
-    y+=6; doc.setFont(undefined,'bold'); doc.setTextColor(14,165,233);
-    const totalText=document.getElementById('total').textContent.replace("₹",currency+" ");
-    doc.text("Total Amount: "+totalText,40,y); y+=18;
-    doc.setTextColor(0,0,0); doc.setFont(undefined,'normal');
-    doc.text("Please confirm delivery time.",40,y);
-
-    doc.save(invoiceNo+".pdf");
-  } catch(err){
-    console.error('Invoice generation failed', err);
-    alert('Could not generate PDF. Try again.');
-  }
+  doc.save(invoiceNo+".pdf");
 }
 
 // initial render
