@@ -9,43 +9,67 @@
   --bg:#f6f9fb; --card:#fff; --brand:#0ea5e9; --accent:#e91e63;
   --muted:#6b7280; --radius:12px;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0f172a}
-.container{max-width:1100px;margin:28px auto;padding:18px}
-a{color:var(--brand);text-decoration:none;position:relative}
-a:hover{text-decoration:underline;text-decoration-thickness:2px}
-.cart-count{
-  position:absolute; top:-8px; right:-12px; background:#e91e63; color:#fff; font-size:12px; font-weight:700; padding:2px 6px; border-radius:50%;
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Inter,system-ui,Arial;background:var(--bg);color:#0f172a;line-height:1.5;}
+a{text-decoration:none;color:var(--brand);}
+a:hover{text-decoration:underline;text-decoration-thickness:2px;}
+.container{max-width:1100px;margin:28px auto;padding:18px;}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+.brand{display:flex;gap:12px;align-items:center;}
+.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;}
+.cart-count{position:absolute;top:-8px;right:-12px;background:#e91e63;color:#fff;font-size:12px;font-weight:700;padding:2px 6px;border-radius:50%;}
+
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:var(--card);padding:20px;border-radius:var(--radius);box-shadow:0 6px 20px rgba(2,6,23,0.08);}
+@media(max-width:800px){.product-grid{grid-template-columns:1fr;}}
+
+.image-wrap{border-radius:10px;overflow:hidden;position:relative;}
+.main-img{width:100%;height:480px;object-fit:cover;cursor:zoom-in;transition:transform .25s;}
+.main-img:hover{transform:scale(1.05);}
+.thumbs{display:flex;gap:10px;margin-top:12px;overflow-x:auto;}
+.thumb{width:70px;height:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:0.2s;}
+.thumb.active{border-color:var(--brand);transform:scale(1.05);}
+
+h1{font-size:22px;margin:0 0 8px;}
+.muted{color:var(--muted);font-size:14px;}
+.price-row{display:flex;gap:12px;align-items:center;margin:12px 0;flex-wrap:wrap;}
+.price-old{text-decoration:line-through;color:#888;}
+.price-new{color:var(--accent);font-weight:800;font-size:20px;}
+
+.option-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.option{padding:8px 14px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:0.25s;}
+.option:hover{background:var(--brand);color:#fff;border-color:var(--brand);}
+.option.active{background:var(--brand);color:#fff;border-color:var(--brand);transform:scale(1.05);}
+
+.btn{padding:10px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer;transition:0.25s;text-decoration:none;}
+.btn-primary{background:linear-gradient(90deg,var(--brand),#6366f1);color:#fff;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.15);}
+.btn-ghost{background:#fff;border:1px solid #ddd;color:#0f172a;}
+.btn-ghost:hover{background:#f0f0f0;transform:translateY(-1px);}
+.btn-wish{background:linear-gradient(90deg,var(--accent),#d81b60);color:#fff;}
+.btn-wish:hover{transform:scale(1.05);}
+
+.tag{padding:6px 10px;border-radius:8px;background:#f1f5f9;font-weight:600;font-size:13px;transition:0.2s;}
+.tag:hover{background:#e0f0ff;}
+
+table{width:100%;border-collapse:collapse;margin-top:20px;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.05);border-radius:12px;overflow:hidden;}
+th, td{padding:12px;text-align:left;border-bottom:1px solid #eee;}
+th{background:var(--brand);color:#fff;}
+.tags{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
+
+.product-description{margin-top:20px;}
+.product-description h3{margin-bottom:10px;}
+.product-description ul{list-style-type:disc;padding-left:20px;color:var(--muted);}
+
+@media(max-width:800px){
+  .sticky-actions{
+    position:fixed;bottom:0;left:0;width:100%;background:rgba(255,255,255,0.95);
+    padding:12px 18px;display:flex;gap:10px;justify-content:space-between;box-shadow:0 -4px 12px rgba(0,0,0,0.1);z-index:999;
+  }
 }
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.brand{display:flex;gap:12px;align-items:center}
-.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
-.card{background:var(--card);padding:20px;border-radius:var(--radius);box-shadow:0 8px 24px rgba(2,6,23,0.06)}
-.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-@media(max-width:800px){.product-grid{grid-template-columns:1fr}}
-.image-wrap{border-radius:10px;overflow:hidden}
-.main-img{width:100%;height:480px;object-fit:cover;cursor:zoom-in;transition:transform .25s}
-.main-img:hover{transform:scale(1.05)}
-.thumbs{display:flex;gap:10px;margin-top:12px}
-.thumb{width:70px;height:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent}
-.thumb.active{border-color:var(--brand)}
-h1{font-size:22px;margin:0 0 8px}
-.muted{color:var(--muted);font-size:14px}
-.price-row{display:flex;gap:12px;align-items:center;margin:12px 0}
-.price-old{text-decoration:line-through;color:#888}
-.price-new{color:var(--accent);font-weight:800;font-size:20px}
-.tags{display:flex;gap:8px;margin-top:8px}
-.tag{padding:6px 10px;border-radius:8px;background:#f1f5f9;font-weight:600;font-size:13px}
-.btn{padding:10px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
-.btn-primary{background:var(--brand);color:#fff}
-.btn-ghost{background:#fff;border:1px solid #ddd;color:#0f172a}
-.btn-wish{background:linear-gradient(90deg,var(--accent),#d81b60);color:#fff}
-table{width:100%;border-collapse:collapse;margin-top:20px;box-shadow:0 4px 20px rgba(0,0,0,0.05);border-radius:12px;overflow:hidden}
-th, td{padding:12px;text-align:left;border-bottom:1px solid #eee}
-th{background:var(--brand);color:#fff}
 </style>
 </head>
 <body>
+
 <div class="container">
   <div class="top">
     <div class="brand">
@@ -55,13 +79,15 @@ th{background:var(--brand);color:#fff}
         <div style="font-size:13px;color:var(--muted)">Bulk Shirts • Best Deals</div>
       </div>
     </div>
-    <div>
-      <a href="cart.html"> <img src="Images/cart.png" alt="Cart" style="width:40px;height:40px;vertical-align:middle;margin-right:8px;"> 
-      <span id="cartCount" class="cart-count">0</span></a>
+    <div style="position:relative;">
+      <a href="cart.html">
+        <img src="Images/cart.png" alt="Cart" style="width:40px;height:40px;vertical-align:middle;margin-right:8px;">
+        <span id="cartCount" class="cart-count">0</span>
+      </a>
     </div>
   </div>
 
-  <div class="card product-grid">
+  <div class="product-grid">
     <div>
       <div class="image-wrap">
         <img id="mainImage" class="main-img" src="Images/img4.webp" alt="Casual Shirt">
@@ -83,18 +109,28 @@ th{background:var(--brand);color:#fff}
       </div>
 
       <div style="margin-top:18px">
+        <h3>Select Size</h3>
+        <div class="option-group" id="sizeOptions">
+          <div class="option" onclick="selectOption(this,'size')">M</div>
+          <div class="option" onclick="selectOption(this,'size')">L</div>
+          <div class="option" onclick="selectOption(this,'size')">XL</div>
+        </div>
+      </div>
+<div style="margin-top:18px; display:flex;gap:12px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="buyNow('Casual Shirt',350)">Buy Now</button>
         <button class="btn btn-ghost" onclick="addToCart('Casual Shirt',350)">Add to Cart</button>
         <button class="btn btn-wish" onclick="toggleWish(this)">♡ Wishlist</button>
       </div>
 
-      <div style="margin-top:18px">
-        <h3>Available Sizes</h3>
-        <div style="display:flex;gap:8px;">
-          <div class="tag">M</div>
-          <div class="tag">L</div>
-          <div class="tag">XL</div>
-        </div>
+      <div class="product-description">
+        <h3>Product Description</h3>
+        <ul>
+          <li>Casual ethnic-style shirt with comfortable fit</li>
+          <li>Great for everyday and festive collections</li>
+          <li>Fabric: Premium Cotton</li>
+          <li>Fit: Slim Fit</li>
+          <li>Wash: Machine wash cold</li>
+        </ul>
       </div>
 
       <table>
@@ -115,18 +151,23 @@ th{background:var(--brand);color:#fff}
         <div class="tag">Made in India</div>
       </div>
 
-      <a class="btn btn-ghost" style="margin-top:12px;" href="https://wa.me/916394794212?text=Hello%20Savitri%20Wholesale,%20I%20want%20to%20order%20Casual%20Shirt" target="_blank">Enquire on WhatsApp</a>
     </div>
   </div>
 </div>
 
 <script>
 const CART_KEY = 'cart_sw';
+let selectedSize=null;
+
+function selectOption(el,type){
+  document.querySelectorAll(`#${type}Options .option`).forEach(opt=>opt.classList.remove('active'));
+  el.classList.add('active');
+  selectedSize = el.textContent;
+}
 
 function updateCartCount(){
   const cart = readCart();
-  const count = cart.reduce((acc,item)=>acc+item.qty,0);
-  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartCount').textContent = cart.reduce((acc,item)=>acc+item.qty,0);
 }
 
 function pick(el){
@@ -136,41 +177,28 @@ function pick(el){
 }
 
 function toggleWish(btn){
-  if(btn.dataset.on==='1'){
-    btn.dataset.on='0';
-    btn.textContent='♡ Wishlist';
-    alert('Removed from wishlist');
-  }else{
-    btn.dataset.on='1';
-    btn.textContent='✓ Wishlisted';
-    alert('Added to wishlist');
-  }
+  if(btn.dataset.on==='1'){btn.dataset.on='0'; btn.textContent='♡ Wishlist'; alert('Removed from wishlist')}
+  else{btn.dataset.on='1'; btn.textContent='✓ Wishlisted'; alert('Added to wishlist')}
 }
 
-function readCart(){
-  try{return JSON.parse(localStorage.getItem(CART_KEY))||[];}catch{return [];}
-}
-
+function readCart(){try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{return []}}
 function writeCart(c){localStorage.setItem(CART_KEY,JSON.stringify(c));}
 
 const imageMap={'Casual Shirt':'Images/img4.webp'};
 
 function addToCart(product,price){
-  const cart = readCart();
-  const existing = cart.find(i=>i.product===product);
-  if(existing){existing.qty++; existing.total = existing.qty*existing.price;}
-  else{cart.push({product,price,qty:1,total:price,image:imageMap[product]});}
+  if(!selectedSize){alert('Please select size first!'); return;}
+  const cart=readCart();
+  const existing=cart.find(i=>i.product===product && i.size===selectedSize);
+  if(existing){existing.qty++; existing.total=existing.qty*existing.price;}
+  else{cart.push({product,price,qty:1,total:price,image:imageMap[product],size:selectedSize});}
   writeCart(cart);
   updateCartCount();
-  alert(product+' added to cart');
+  alert(product+' ('+selectedSize+') added to cart');
 }
 
-function buyNow(product,price){
-  addToCart(product,price);
-  window.location.href='cart.html';
-}
+function buyNow(product,price){addToCart(product,price); window.location.href='cart.html';}
 
-// Zoom effect
 const mainImage=document.getElementById("mainImage");
 mainImage.addEventListener("mousemove",function(e){
   const {left,top,width,height}=mainImage.getBoundingClientRect();
@@ -179,9 +207,10 @@ mainImage.addEventListener("mousemove",function(e){
   mainImage.style.transformOrigin=`${x}% ${y}%`;
   mainImage.style.transform="scale(2)";
 });
-mainImage.addEventListener("mouseleave",function(){mainImage.style.transform="scale(1)";});
+mainImage.addEventListener("mouseleave",()=>{mainImage.style.transform="scale(1)";});
 
 updateCartCount();
 </script>
+
 </body>
 </html>
