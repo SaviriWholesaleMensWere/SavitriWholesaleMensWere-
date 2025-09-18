@@ -21,7 +21,8 @@
   .card:hover{transform:translateY(-5px);box-shadow:0 25px 60px rgba(0,0,0,0.12);}
   h2{margin-bottom:15px;color:var(--primary);font-weight:700;}
   h3{margin-top:25px;margin-bottom:10px;color:var(--primary-dark);}
-  table{width:100%;border-collapse:collapse;margin-top:16px;border-radius:12px;overflow:hidden;transition:0.3s;}
+  .table-wrapper{overflow-x:auto;margin-top:16px;border-radius:12px;}
+  table{width:100%;border-collapse:collapse;min-width:600px;}
   th,td{padding:12px;text-align:left;}
   th{background:var(--primary);color:#fff;font-weight:600;}
   tr:nth-child(even) td{background:rgba(14,165,233,0.05);}
@@ -39,7 +40,19 @@
   body.dark tr:nth-child(even) td{background:rgba(255,255,255,0.05);}
   .dark-toggle{position:fixed;top:20px;right:20px;background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:50px;cursor:pointer;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:100;transition:0.3s;}
   .dark-toggle:hover{background:var(--primary-dark);transform:translateY(-2px);}
-  @media(max-width:600px){.row{flex-direction:column;align-items:flex-start;}.row.total{font-size:18px;}.btn{width:100%;}}
+
+  /* 📱 Mobile Responsive */
+  @media(max-width:600px){
+    .container{padding:10px;margin:10px;}
+    h2{font-size:20px;}
+    h3{font-size:18px;}
+    .row{flex-direction:column;align-items:flex-start;font-size:14px;}
+    .row.total{font-size:18px;}
+    .btn{width:100%;padding:12px;font-size:15px;}
+    th,td{padding:8px;font-size:13px;}
+    table{min-width:500px;} /* force horizontal scroll */
+    .table-wrapper{overflow-x:auto;}
+  }
 </style>
 </head>
 <body>
@@ -49,12 +62,14 @@
   <div class="card" id="orderCard">
     <h2><i class="fa-solid fa-cart-shopping"></i> Order Summary</h2>
 
-    <table id="orderTable">
-      <thead>
-        <tr><th>Product</th><th>Size</th><th>Colour</th><th>Qty</th><th>Price</th><th>Total</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-wrapper">
+      <table id="orderTable">
+        <thead>
+          <tr><th>Product</th><th>Size</th><th>Colour</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <div class="row"><div>Subtotal</div><div id="sub">₹0</div></div>
     <div class="row"><div>Shipping</div><div>Free</div></div>

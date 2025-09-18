@@ -62,7 +62,7 @@
       </div>
     </div>
     <div>
-      <a href="cart.html"> <img src="Images/cart.png" alt="Cart" style="width:40px;height:40px;vertical-align:middle;margin-right:8px;"> 
+      <a href="cart.html"> <img src="cart.png" alt="Cart" style="width:40px;height:40px;vertical-align:middle;margin-right:8px;"> 
       <span id="cartCount" class="cart-count">0</span></a>
     </div>
   </div>
@@ -70,13 +70,13 @@
   <div class="card product-grid">
     <div>
       <div class="image-wrap">
-        <img id="mainImage" class="main-img" src="Images/img1.webp" alt="Formal Shirt">
+        <img id="mainImage" class="main-img" src="img1.webp" alt="Formal Shirt">
       </div>
       <div class="thumbs">
-        <img src="Images/img1.webp" class="thumb active" onclick="pick(this)">
-        <img src="Images/img2.webp" class="thumb" onclick="pick(this)">
-        <img src="Images/img3.webp" class="thumb" onclick="pick(this)">
-        <img src="Images/img5.webp" class="thumb" onclick="pick(this)">
+        <img src="img1.webp" class="thumb active" onclick="pick(this)">
+        <img src="img2.webp" class="thumb" onclick="pick(this)">
+        <img src="img3.webp" class="thumb" onclick="pick(this)">
+        <img src="img5.webp" class="thumb" onclick="pick(this)">
       </div>
     </div>
 
@@ -164,7 +164,7 @@ function selectColour(el){
   selectedColour = el.textContent;
 }
 
-const imageMap = {'Formal Cotton Shirt':'Images/img1.webp'};
+const imageMap = {'Formal Cotton Shirt':'img1.webp'};
 
 function addToCart(product,price){
   if(!selectedSize || !selectedColour){
